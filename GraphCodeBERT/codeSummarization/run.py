@@ -170,7 +170,7 @@ def convert_examples_to_features(examples, tokenizer, args,stage=None):
     features = []
     for example_index, example in enumerate(tqdm(examples,total=len(examples))):
         ##extract data flow
-        code_tokens,dfg=extract_dataflow(example.source,parsers['java'],'java')
+        code_tokens,dfg=extract_dataflow(example.source,parsers[args.lang],args.lang)
         code_tokens=[tokenizer.tokenize('@ '+x)[1:] if idx!=0 else tokenizer.tokenize(x) for idx,x in enumerate(code_tokens)]
         ori2cur_pos={}
         ori2cur_pos[-1]=(0,0)
@@ -296,6 +296,8 @@ def main():
     parser = argparse.ArgumentParser()
 
     ## Required parameters  
+    parser.add_argument("--lang", default=None, type=str, required=True,
+                        help="language: e.g. ruby")
     parser.add_argument("--model_type", default=None, type=str, required=True,
                         help="Model type: e.g. roberta")
     parser.add_argument("--model_name_or_path", default=None, type=str, required=True,
